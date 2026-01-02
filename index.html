@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UX/UI & AI Designer Portfolio</title>
+    <style>
+        /* --- 변수 및 초기화 --- */
+        :root {
+            --bg-color: #0a0a0a;
+            --text-main: #ffffff;
+            --text-sub: #a0a0a0;
+            --accent: #00f2ff; /* AI 느낌의 사이안 컬러 */
+            --accent-grad: linear-gradient(45deg, #00f2ff, #7000ff);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --gap: 2rem;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            cursor: none; /* 커스텀 커서를 위해 기본 숨김 */
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* --- 커스텀 커서 (AI Focus 효과) --- */
+        .cursor-dot, .cursor-outline {
+            position: fixed;
+            top: 0; left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        .cursor-dot {
+            width: 8px; height: 8px;
+            background-color: var(--accent);
+        }
+        .cursor-outline {
+            width: 40px; height: 40px;
+            border: 1px solid var(--accent);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        /* --- 레이아웃 --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            padding: 6rem 0;
+            opacity: 0; /* 스크롤 애니메이션 초기 상태 */
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- 헤더 --- */
+        header {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 1.5rem 0;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-weight: 700; font-size: 1.5rem; letter-spacing: -1px; }
+        .logo span { color: var(--accent); }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a:hover { color: var(--accent); }
+
+        /* --- Hero 섹션 --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        .hero-content h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            line-height: 1.1;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: var(--accent-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-content p {
+            font-size: 1.25rem;
+            color: var(--text-sub);
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        .btn:hover {
+            background: var(--accent);
+            color: #000;
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        /* --- About (Skills) --- */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .skill-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+        .skill-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+        .skill-card h3 { margin-bottom: 1rem; color: var(--accent); }
+
+        /* --- Projects --- */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .project-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            group: hover;
+        }
+        .project-img {
+            width: 100%;
+            height: 250px;
+            background: #222; /* 이미지 placeholder */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #444;
+            transition: 0.5s;
+        }
+        .project-info { padding: 1.5rem; }
+        .project-tags span {
+            font-size: 0.8rem;
+            background: rgba(0, 242, 255, 0.1);
+            color: var(--accent);
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+        .project-card:hover .project-img {
+            filter: brightness(1.2);
+            background: #333;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 4rem 0;
+            color: var(--text-sub);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* --- 반응형 --- */
+        @media (max-width: 768px) {
+            .nav-links { display: none; } /* 간단화를 위해 모바일 메뉴 생략 */
+            .cursor-dot, .cursor-outline { display: none; } /* 모바일 터치 시 커서 숨김 */
+            body { cursor: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">DESIGN<span>.AI</span></div>
+                <ul class="nav-links">
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#work">Work</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero container">
+            <div class="hero-content">
+                <h1>Human Centric<br>AI Experience</h1>
+                <p>
+                    디자인 전공의 감각과 UX/UI 논리, 그리고 AI 기술에 대한 이해를 결합합니다.
+                    사용자와 인공지능을 잇는 직관적인 인터페이스를 설계합니다.
+                </p>
+                <a href="#work" class="btn">View Projects</a>
+            </div>
+        </section>
+
+        <section id="about" class="container">
+            <h2>Expertise</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>UX/UI Design</h3>
+                    <p>Figma, Prototyping, User Research. 사용자의 니즈를 정확히 파악하여 논리적인 디자인 시스템을 구축합니다.</p>
+                </div>
+                <div class="skill-card">
+                    <h3>AI & Data</h3>
+                    <p>Prompt Engineering, LLM Understanding. AI 모델의 출력을 사용자가 이해하기 쉬운 시각 언어로 변환합니다.</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Frontend Basic</h3>
+                    <p>HTML/CSS/JS. 개발자와의 원활한 소통을 위해 구현 가능한 디자인을 하며 웹 구조를 이해합니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="work" class="container">
+            <h2>Selected Works</h2>
+            <div class="project-grid">
+                <article class="project-card">
+                    <div class="project-img"></div>
+                    <div class="project-info">
+                        <div class="project-tags">
+                            <span>UX/UI</span> <span>AI Tool</span>
+                        </div>
+                        <h3 style="margin: 10px 0;">AI Dashboard Redesign</h3>
+                        <p style="color:var(--text-sub); font-size: 0.9rem;">복잡한 AI 데이터 분석 결과를 직관적으로 시각화한 대시보드 프로젝트입니다.</p>
+                    </div>
+                </article>
+                <article class="project-card">
+                    <div class="project-img">
+
+[Image of Mobile App UI]
+</div>
+                    <div class="project-info">
+                        <div class="project-tags">
+                            <span>Mobile</span> <span>Generative AI</span>
+                        </div>
+                        <h3 style="margin: 10px 0;">Generative Art App</h3>
+                        <p style="color:var(--text-sub); font-size: 0.9rem;">생성형 AI를 활용한 아트워크 제작 모바일 애플리케이션 UX/UI 설계.</p>
+                    </div>
+                </article>
+                <article class="project-card">
+                    <div class="project-img"></div>
+                    <div class="project-info">
+                        <div class="project-tags">
+                            <span>Web</span> <span>Interaction</span>
+                        </div>
+                        <h3 style="margin: 10px 0;">Interactive Storytelling</h3>
+                        <p style="color:var(--text-sub); font-size: 0.9rem;">스크롤 인터랙션을 활용한 브랜드 스토리텔링 웹사이트 구축.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section id="contact" class="container" style="text-align: center;">
+            <h2>Let's Create Together</h2>
+            <p style="margin: 1rem 0 3rem 0; color: var(--text-sub);">
+                새로운 기술과 디자인의 접점에서 함께 일할 기회를 찾고 있습니다.
+            </p>
+            <a href="mailto:email@example.com" class="btn">Get in Touch</a>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Designed & Built by You.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. 커스텀 커서 인터랙션
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            // 작은 점은 즉시 따라옴
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+
+            // 큰 원은 약간의 딜레이를 두고 따라옴 (부드러운 느낌)
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // 링크 호버 시 커서 반응형 효과
+        document.querySelectorAll('a, .project-card').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                cursorOutline.style.width = '70px';
+                cursorOutline.style.height = '70px';
+                cursorOutline.style.backgroundColor = 'rgba(0, 242, 255, 0.1)';
+            });
+            item.addEventListener('mouseleave', () => {
+                cursorOutline.style.width = '40px';
+                cursorOutline.style.height = '40px';
+                cursorOutline.style.backgroundColor = 'transparent';
+            });
+        });
+
+        // 2. 스크롤 시 요소 페이드인 (Intersection Observer)
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
